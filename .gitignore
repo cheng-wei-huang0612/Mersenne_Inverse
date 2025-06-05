@@ -1,0 +1,14 @@
+*.o
+*.out
+*.exe
+*.bin
+
+tests/random_test
+tests/single_test
+
+.vscode/
+
+*.swp
+
+
+.DS_Store
