@@ -1,7 +1,14 @@
 /* slots.h ── 64-bit 連續暫存索引表（9-limb × 30-bit 版本） */
 enum {
+    IDX_CONST_2P32M1,   /* 2^32 − 1 */
+    IDX_CONST_2P30M1,   /* 2^30 − 1 */
+    IDX_CONST_2P30M19,  /* 2^30 − 19 */
+    IDX_CONST_2P15M1,   /* 2^15 − 1 */
+    
+    IDX_X0, IDX_X1, IDX_X2, IDX_X3, 
+    IDX_INV0, IDX_INV1, IDX_INV2, IDX_INV3, /* 0 – 7 */
     /*─── F.limb[0..8] ───*/                    /*  0 –  8 */
-    IDX_F0 = 0, IDX_F1, IDX_F2, IDX_F3, IDX_F4,
+    IDX_F0, IDX_F1, IDX_F2, IDX_F3, IDX_F4,
     IDX_F5, IDX_F6, IDX_F7, IDX_F8,
 
     /*─── G.limb[0..8] ───*/                    /*  9 – 17 */
@@ -21,10 +28,6 @@ enum {
     IDX_UU, IDX_VV, IDX_RR, IDX_SS,             /* 37 – 40 */
 
     /*─── 常數區 ───*/                          /* 41 – 44 */
-    IDX_CONST_2P32M1,   /* 2^32 − 1 */
-    IDX_CONST_2P30M1,   /* 2^30 − 1 */
-    IDX_CONST_2P30M19,  /* 2^30 − 19 */
-    IDX_CONST_2P15M1,   /* 2^15 − 1 */
 
     /*─── 中壽標量 ───*/                        /* 45 – 48 */
     IDX_f, IDX_g,                               /* 45 – 46 */

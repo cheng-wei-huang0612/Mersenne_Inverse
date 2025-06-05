@@ -1,8 +1,12 @@
 #include <stdint.h>
 #include <stdio.h>
+#include "slot.h"
 
 
-void extraction(int64_t *uvrs, int64_t *fuv, int64_t *grs) { 
+void extraction_to_uvrs(uint64_t *tmp) {
+    int64_t *fuv = (int64_t *)&tmp[IDX_FUV];
+    int64_t *grs = (int64_t *)&tmp[IDX_GRS];
+    uint64_t *uvrs = (uint64_t *)&tmp[IDX_u];
     int64_t u, v, r, s;
 
     v = ((*fuv) + ((int64_t)1 << 20) + ((int64_t)1 << 41));

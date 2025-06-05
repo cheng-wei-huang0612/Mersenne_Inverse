@@ -8,9 +8,18 @@ LDFLAGS = -lgmp
 # 通用的 SRC (可以視需求篩選或增減)
 
 SRC = $(wildcard ../src/p255m19/p255m19_inv.c \
-	  ../src/p255m19/divstep_ref.c \
-	  ../src/p255m19/extraction_ref.c \
-	  ../src/p255m19/inner_update_ref.c \
+	  ../src/p255m19/initialization_ref.c \
+	  ../src/p255m19/low60bits_ref.c \
+	  ../src/p255m19/divstepx19_ref.c \
+	  ../src/p255m19/divstepx20_ref.c \
+	  ../src/p255m19/extraction_to_uvrs_ref.c \
+	  ../src/p255m19/extraction_to_uuvvrrss_ref.c \
+	  ../src/p255m19/inner_update_uuvvrrss_ref.c \
+	  ../src/p255m19/inner_update_fg_with_uuvvrrss_ref.c \
+	  ../src/p255m19/inner_update_fg_ref.c \
+	  ../src/p255m19/update_FG_ref.c \
+	  ../src/p255m19/update_VS_ref.c \
+	  ../src/p255m19/final_adjustment_ref.c \
 	  helper.c \)
 
 
