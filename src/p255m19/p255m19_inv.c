@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <gmp.h>
 #include "slot.h"
 
 extern void low60bits(uint64_t *tmp);
@@ -58,7 +57,6 @@ void cpt_inv(uint64_t *x, uint64_t *inv){
 
 
         update_FG(tmp);
-
         update_VS(tmp);
         
     }

@@ -1,39 +1,59 @@
-CC     = gcc
-CFLAGS = -I../include -O2
-LDFLAGS = -lgmp
-# 如果需要 GMP，就加上 -lgmp
-# LDFLAGS = -lgmp
+########################################################################
+# 使用者可調參數
+########################################################################
+CC          ?= gcc
+BASE_CFLAGS ?= -O3 -I../src/p255m19/   # slot.h 在 ../src/p255m19/
+USE_GMP     ?= 1                       # 0 → 不連 GMP
 
+CFLAGS  += $(BASE_CFLAGS)
+ifeq ($(USE_GMP),1)
+  LDFLAGS := -lgmp
+else
+  LDFLAGS :=
+endif
 
-# 通用的 SRC (可以視需求篩選或增減)
+########################################################################
+# 來源檔清單
+########################################################################
+SRC := \
+  ../src/p255m19/p255m19_inv.c \
+  $(wildcard ../src/p255m19/*/*_ref.c) \
+  helper.c
 
-SRC = $(wildcard ../src/p255m19/p255m19_inv.c \
-	  ../src/p255m19/initialization_ref.c \
-	  ../src/p255m19/low60bits_ref.c \
-	  ../src/p255m19/divstepx19_ref.c \
-	  ../src/p255m19/divstepx20_ref.c \
-	  ../src/p255m19/extraction_to_uvrs_ref.c \
-	  ../src/p255m19/extraction_to_uuvvrrss_ref.c \
-	  ../src/p255m19/inner_update_uuvvrrss_ref.c \
-	  ../src/p255m19/inner_update_fg_with_uuvvrrss_ref.c \
-	  ../src/p255m19/inner_update_fg_ref.c \
-	  ../src/p255m19/update_FG_ref.c \
-	  ../src/p255m19/update_VS_ref.c \
-	  ../src/p255m19/final_adjustment_ref.c \
-	  helper.c \)
+# 把 .c → .o（物件檔與原始檔放在同一路徑）
+OBJ := $(SRC:.c=.o)
 
+TARGETS := single_test random_test
 
+########################################################################
+# 預設目標
+########################################################################
+.PHONY: all clean
+all: $(TARGETS)
 
+########################################################################
+# 一般規則
+########################################################################
+# 1. 通用編譯規則：*.c → *.o
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
-all: single_test random_test
+# 2. 測試程式連結
+single_test: single_test.o $(OBJ)
+	$(CC) $(CFLAGS) $^ $(LDFLAGS) -o $@
 
-single_test: single_test.c $(SRC)
-	$(CC) $(CFLAGS) single_test.c $(SRC) $(LDFLAGS) -o single_test
+random_test: random_test.o $(OBJ)
+	$(CC) $(CFLAGS) $^ $(LDFLAGS) -o $@
 
-random_test: random_test.c $(SRC)
-	$(CC) $(CFLAGS) random_test.c $(SRC) $(LDFLAGS) -o random_test
+# 3. 如果還沒有對應的 .o，就先編譯測試主程式
+single_test.o: single_test.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
+random_test.o: random_test.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
+########################################################################
+# 清理
+########################################################################
 clean:
-	rm -f single_test random_test 
-
+	rm -f $(TARGETS) $(OBJ) single_test.o random_test.o
