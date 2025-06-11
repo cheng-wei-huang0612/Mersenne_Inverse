@@ -4,33 +4,56 @@
 /* 介面改成整塊 tmp；用 slot 索引存取 */
 void divstepx20(uint64_t *tmp)               /* ← 新原型 */
 {
-    tmp[IDX_FUV] = (tmp[IDX_f] & 0xFFFFF) - ( (int64_t) 1 << 41 );
-    tmp[IDX_GRS] = (tmp[IDX_g] & 0xFFFFF) - ( (int64_t) 1 << 62 );
+    int64_t FUV, GRS, DELTA;
+    FUV = (tmp[IDX_f] & 0xFFFFF) - (tmp[IDX_CONST_2P41]);
+    GRS = (tmp[IDX_g] & 0xFFFFF) - (tmp[IDX_CONST_2P62]);
+    DELTA = tmp[IDX_DELTA];
     
-    int64_t *delta = (int64_t *)&tmp[IDX_DELTA];
-    int64_t *fuv   = (int64_t *)&tmp[IDX_FUV];
-    int64_t *grs   = (int64_t *)&tmp[IDX_GRS];
+    int64_t m1, ff;
+
+
+    // int64_t *delta = (int64_t *)&tmp[IDX_DELTA];
+    // int64_t *fuv   = (int64_t *)&tmp[IDX_FUV];
+    // int64_t *grs   = (int64_t *)&tmp[IDX_GRS];
 
     for (int i = 0; i < 20; i++)
     {
+        m1 = DELTA - 1;
+        if ((GRS & 1) == 1) {
+            ff = FUV;
+        } else {
+            ff = 0;
+        }
         
-        
-        int64_t g0_and_1 = (*grs) & 1;
-        
-        int64_t cond  = (~((*delta - 1) >> 63)) & g0_and_1;
-        int64_t cmask = -cond;
-        int64_t nmask = ~cmask;
-        
-        int64_t fuv_new = (nmask & *fuv) ^ (cmask & *grs);
-        int64_t grs_new = (cmask & (-*fuv)) ^ (nmask & *grs);
-        
-        *fuv   = fuv_new;
-        *grs   = grs_new;
-        
-        int64_t delta_swap = *delta ^ (-*delta);
-        *delta ^= (cmask & delta_swap);
-        
-        *grs   = (((-g0_and_1) & *fuv) + *grs) >> 1;
-        *delta += 2;
+        int64_t rotated_GRS = ((uint64_t)GRS << 63) | ((uint64_t)GRS >> 1);
+        int64_t tst_result = m1 & rotated_GRS;
+
+        // DELTA = m1 if N=0 else -DELTA
+        if (tst_result >= 0) {  // N flag (negative bit) is clear
+            DELTA = m1;
+        } else {
+            DELTA = -DELTA;
+        }
+
+        // FUV = GRS if N=1 else FUV
+        if (tst_result < 0) {  // N flag is set
+            FUV = GRS;
+        }
+
+        // ff = ff if N=0 else -ff
+        if (tst_result < 0) {  // negative check for ff
+            ff = -ff;
+        }
+
+        // GRS = (GRS + ff) >> 1 (算術位移)
+        GRS = (GRS + ff) >> 1;
+
+
+
+
     }
+
+    tmp[IDX_FUV] = FUV;
+    tmp[IDX_GRS] = GRS;
+    tmp[IDX_DELTA] = DELTA;
 }
