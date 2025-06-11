@@ -19,9 +19,16 @@ with dest.open("w") as f:
         #define {guard}
 
         """))
+
     for i, n in enumerate(names):
         f.write(f"#define {n:<24} {i}\n")
+
+    f.write("\n/* Byte offsets (64-bit array → bytes) */\n")
+    for i, n in enumerate(names):
+        f.write(f"#define BYTE_{n:<19} {i << 3}\n")
+
     f.write(f"\n#define SLOTS_TOTAL               {len(names)}\n")
-    f.write(  "#define SLOT_OFFSET(idx)        ((idx) << 3)  /* 64-bit array -> bytes */\n")
+    f.write("#define SLOT_OFFSET(idx)        ((idx) << 3)  /* 64-bit array -> bytes */\n")
     f.write(f"\n#endif /* {guard} */\n")
+
 print(f"[gen] {dest}  ⟵  {len(names)} symbols")
