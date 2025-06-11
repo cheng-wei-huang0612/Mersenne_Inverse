@@ -26,10 +26,10 @@ static void tmp_big30_from_mpz(uint64_t *T, int base_idx, const mpz_t z)
 void final_adjustment(uint64_t *tmp) {
     /* 1. 轉 V → mpz */
     mpz_t mpV;      mpz_init(mpV);
-    mpz_from_tmp_big30(mpV, tmp, IDX_V0);
+    mpz_from_tmp_big30(mpV, tmp, IDX_VEC_V0);
 
     /* 2. 取 sign(F)  (limb0 最低 30 bit，帶符號延伸到 32 bit) */
-    int32_t sign_F = (int32_t)tmp[IDX_F0];   /* 取 32 bit  */
+    int32_t sign_F = (int32_t)tmp[IDX_VEC_F0];   /* 取 32 bit  */
     sign_F <<= 2;   sign_F >>= 2;            /* 保留最低 30 bit 的符號 */
 
     /* 3. 若 sign_F 為 −1 則取模補正；若 0/1 則照乘 */
@@ -47,7 +47,8 @@ void final_adjustment(uint64_t *tmp) {
     mpz_mod(mpV, mpV, mpP);
 
     /* 6. 回寫到 tmp[] */
-    tmp_big30_from_mpz(tmp, IDX_V0, mpV);
+    tmp_big30_from_mpz(tmp, IDX_VEC_V0, mpV);
+
 
     uint64_t *inv = (uint64_t *)&tmp[IDX_INV0];
 
@@ -68,7 +69,7 @@ void final_adjustment(uint64_t *tmp) {
         inv[0] = (old0 << 30);
 
         // 再加上 x->limb[i] (最低 30 bits)，以 64-bit 來裝沒問題
-        inv[0] |= (uint64_t) tmp[IDX_V0 + i] & 0x3FFFFFFF; 
+        inv[0] |= (uint64_t) tmp[IDX_VEC_V0 + i] & 0x3FFFFFFF; 
     }
 
 

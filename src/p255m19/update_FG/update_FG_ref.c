@@ -29,8 +29,31 @@ static inline void tmp_big30_from_mpz(uint64_t *T, int base_idx, const mpz_t z)
 void update_FG(uint64_t *tmp) {
         /* 1. 轉 F,G → mpz */
     mpz_t mpF, mpG;                      mpz_inits(mpF, mpG, NULL);
-    mpz_from_tmp_big30(mpF, tmp, IDX_F0);
-    mpz_from_tmp_big30(mpG, tmp, IDX_G0);
+
+    tmp[IDX_VEC_F0] = tmp[IDX_VEC_F0_F1_G0_G1] & 0xFFFFFFFF; 
+    tmp[IDX_VEC_F1] = (tmp[IDX_VEC_F0_F1_G0_G1] >> 32) & 0xFFFFFFFF;
+    tmp[IDX_VEC_G0] = tmp[IDX_VEC_F0_F1_G0_G1_HI1] & 0xFFFFFFFF;
+    tmp[IDX_VEC_G1] = (tmp[IDX_VEC_F0_F1_G0_G1_HI1] >> 32) & 0xFFFFFFFF;
+    tmp[IDX_VEC_F2] = tmp[IDX_VEC_F2_F3_G2_G3] & 0xFFFFFFFF;
+    tmp[IDX_VEC_F3] = (tmp[IDX_VEC_F2_F3_G2_G3] >> 32) & 0xFFFFFFFF;
+    tmp[IDX_VEC_G2] = tmp[IDX_VEC_F2_F3_G2_G3_HI1] & 0xFFFFFFFF;
+    tmp[IDX_VEC_G3] = (tmp[IDX_VEC_F2_F3_G2_G3_HI1] >> 32) & 0xFFFFFFFF;
+    tmp[IDX_VEC_F4] = tmp[IDX_VEC_F4_F5_G4_G5] & 0xFFFFFFFF;
+    tmp[IDX_VEC_F5] = (tmp[IDX_VEC_F4_F5_G4_G5] >> 32) & 0xFFFFFFFF;
+    tmp[IDX_VEC_G4] = tmp[IDX_VEC_F4_F5_G4_G5_HI1] & 0xFFFFFFFF;
+    tmp[IDX_VEC_G5] = (tmp[IDX_VEC_F4_F5_G4_G5_HI1] >> 32) & 0xFFFFFFFF;
+    tmp[IDX_VEC_F6] = tmp[IDX_VEC_F6_F7_G6_G7] & 0xFFFFFFFF;
+    tmp[IDX_VEC_F7] = (tmp[IDX_VEC_F6_F7_G6_G7] >> 32) & 0xFFFFFFFF;
+    tmp[IDX_VEC_G6] = tmp[IDX_VEC_F6_F7_G6_G7_HI1] & 0xFFFFFFFF;
+    tmp[IDX_VEC_G7] = (tmp[IDX_VEC_F6_F7_G6_G7_HI1] >> 32) & 0xFFFFFFFF;
+    tmp[IDX_VEC_F8] = tmp[IDX_VEC_F8_F9_G8_G9] & 0xFFFFFFFF;
+    //tmp[IDX_VEC_F9] = (tmp[IDX_VEC_F8_F9_G8_G9] >> 30) & 0xFFFFFFFF;
+    tmp[IDX_VEC_G8] = tmp[IDX_VEC_F8_F9_G8_G9_HI1] & 0xFFFFFFFF;
+    //tmp[IDX_VEC_G9] = (tmp[IDX_VEC_F8_F9_G8_G9_HI1] >> 30) & 0xFFFFFFFF;
+
+
+    mpz_from_tmp_big30(mpF, tmp, IDX_VEC_F0);
+    mpz_from_tmp_big30(mpG, tmp, IDX_VEC_G0);
 
     /* 2. 係數 uu vv rr ss */
     mpz_t mpuu, mpvv, mprr, mpss;        mpz_inits(mpuu, mpvv, mprr, mpss, NULL);
@@ -51,8 +74,21 @@ void update_FG(uint64_t *tmp) {
     mpz_fdiv_q_2exp(mpG_new, acc, 60);   /* >> 60           */
 
     /* 4. 回寫到 tmp[] */
-    tmp_big30_from_mpz(tmp, IDX_F0, mpF_new);
-    tmp_big30_from_mpz(tmp, IDX_G0, mpG_new);
+    tmp_big30_from_mpz(tmp, IDX_VEC_F0, mpF_new);
+    tmp_big30_from_mpz(tmp, IDX_VEC_G0, mpG_new);
+
+    tmp[IDX_VEC_F0_F1_G0_G1] = (tmp[IDX_VEC_F0] & 0xFFFFFFFF) | ((uint64_t)(tmp[IDX_VEC_F1] & 0xFFFFFFFF) << 32);
+    tmp[IDX_VEC_F0_F1_G0_G1_HI1] = (tmp[IDX_VEC_G0] & 0xFFFFFFFF) | ((uint64_t)(tmp[IDX_VEC_G1] & 0xFFFFFFFF) << 32);
+    tmp[IDX_VEC_F2_F3_G2_G3] = (tmp[IDX_VEC_F2] & 0xFFFFFFFF) | ((uint64_t)(tmp[IDX_VEC_F3] & 0xFFFFFFFF) << 32);
+    tmp[IDX_VEC_F2_F3_G2_G3_HI1] = (tmp[IDX_VEC_G2] & 0xFFFFFFFF) | ((uint64_t)(tmp[IDX_VEC_G3] & 0xFFFFFFFF) << 32);
+    tmp[IDX_VEC_F4_F5_G4_G5] = (tmp[IDX_VEC_F4] & 0xFFFFFFFF) | ((uint64_t)(tmp[IDX_VEC_F5] & 0xFFFFFFFF) << 32);
+    tmp[IDX_VEC_F4_F5_G4_G5_HI1] = (tmp[IDX_VEC_G4] & 0xFFFFFFFF) | ((uint64_t)(tmp[IDX_VEC_G5] & 0xFFFFFFFF) << 32);
+    tmp[IDX_VEC_F6_F7_G6_G7] = (tmp[IDX_VEC_F6] & 0xFFFFFFFF) | ((uint64_t)(tmp[IDX_VEC_F7] & 0xFFFFFFFF) << 32);
+    tmp[IDX_VEC_F6_F7_G6_G7_HI1] = (tmp[IDX_VEC_G6] & 0xFFFFFFFF) | ((uint64_t)(tmp[IDX_VEC_G7] & 0xFFFFFFFF) << 32);
+    tmp[IDX_VEC_F8_F9_G8_G9] = (tmp[IDX_VEC_F8] & 0xFFFFFFFF) ;
+    tmp[IDX_VEC_F8_F9_G8_G9_HI1] = (tmp[IDX_VEC_G8] & 0xFFFFFFFF) ;
+
+
 
     /* 5. 清理 */
     mpz_clears(mpF, mpG, mpF_new, mpG_new,
