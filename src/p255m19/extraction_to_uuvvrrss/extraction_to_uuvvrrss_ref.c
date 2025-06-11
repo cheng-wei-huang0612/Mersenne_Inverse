@@ -4,31 +4,29 @@
 
 
 void extraction_to_uuvvrrss(uint64_t *tmp) {
-    int64_t *fuv = (int64_t *)&tmp[IDX_FUV];
-    int64_t *grs = (int64_t *)&tmp[IDX_GRS];
-    uint64_t *uuvvrrss = (uint64_t *)&tmp[IDX_UU];
+
+    int64_t FUV, GRS;
     int64_t uu, vv, rr, ss;
+    FUV = tmp[IDX_FUV];
+    GRS = tmp[IDX_GRS];
 
-    vv = ((*fuv) + ((int64_t)1 << 20) + ((int64_t)1 << 41));
-    vv = (vv) >> 42;
+    vv = (FUV + tmp[IDX_CONST_2P20A2P41]);
+    tmp[IDX_VV] = (vv) >> 42;
 
-    uu = ((*fuv) + ((int64_t)1 << 20));
-    uu = (uint64_t) (uu) << 22;
-    uu = (uu) >> 43;
+    uu = (FUV + tmp[IDX_CONST_2P20]);
+    uu = (uint64_t)(uu) << 22;
+    tmp[IDX_UU] = (uu) >> 43;
+
+
+    ss = (GRS + tmp[IDX_CONST_2P20A2P41]);
+    tmp[IDX_SS] = (ss) >> 42;
+
+    rr = (GRS + tmp[IDX_CONST_2P20]);
+    rr = (uint64_t)(rr) << 22;
+    tmp[IDX_RR] = (rr) >> 43;
 
 
 
-    ss = ((*grs) + ((int64_t)1 << 20) + ((int64_t)1 << 41));
-    ss = (ss) >> 42;
-
-    rr = ((*grs) + ((int64_t)1 << 20));
-    rr = (uint64_t) (rr) << 22;
-    rr = (rr) >> 43;
-
-    uuvvrrss[0] = uu;
-    uuvvrrss[1] = vv;
-    uuvvrrss[2] = rr;
-    uuvvrrss[3] = ss;
 }
 
 
