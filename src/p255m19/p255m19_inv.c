@@ -10,6 +10,8 @@ extern void divstepx19(uint64_t *tmp);
 extern void divstepx20(uint64_t *tmp);
 extern void extraction_to_uvrs(uint64_t *tmp);
 extern void extraction_to_uuvvrrss(uint64_t *tmp);
+
+
 extern void inner_update_uuvvrrss(uint64_t *tmp);
 extern void inner_update_fg(uint64_t *tmp);
 extern void inner_update_fg_with_uuvvrrss(uint64_t *tmp);
@@ -51,7 +53,6 @@ void cpt_inv(uint64_t *x, uint64_t *inv){
     for (size_t i = 0; i < 10; i++) {
         
         low60bits(tmp);
-        
         
         divstepx20(tmp);
         extraction_to_uvrs(tmp);

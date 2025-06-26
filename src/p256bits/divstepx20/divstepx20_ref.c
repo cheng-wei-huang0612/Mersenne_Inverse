@@ -1,8 +1,8 @@
 #include <stdint.h>
-#include "slot.h"
+#include "../slot.h"
 
 
-void divstepx19(uint64_t *tmp)               /* ← 新原型 */
+void divstepx20(uint64_t *tmp)               /* ← 新原型 */
 {
     int64_t FUV, GRS, DELTA;
     FUV = (tmp[IDX_f] & 0xFFFFF) - (tmp[IDX_CONST_2P41]);
@@ -16,7 +16,7 @@ void divstepx19(uint64_t *tmp)               /* ← 新原型 */
     // int64_t *fuv   = (int64_t *)&tmp[IDX_FUV];
     // int64_t *grs   = (int64_t *)&tmp[IDX_GRS];
 
-    for (int i = 0; i < 19; i++)
+    for (int i = 0; i < 20; i++)
     {
         m1 = DELTA - 1;
         if ((GRS & 1) == 1) {

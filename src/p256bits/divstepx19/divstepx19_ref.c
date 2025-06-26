@@ -1,5 +1,5 @@
 #include <stdint.h>
-#include "slot.h"
+#include "../slot.h"
 
 
 void divstepx19(uint64_t *tmp)               /* ← 新原型 */

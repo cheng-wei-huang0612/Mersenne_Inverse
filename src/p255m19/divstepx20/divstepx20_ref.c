@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include "slot.h"
 
-/* 介面改成整塊 tmp；用 slot 索引存取 */
+
 void divstepx20(uint64_t *tmp)               /* ← 新原型 */
 {
     int64_t FUV, GRS, DELTA;

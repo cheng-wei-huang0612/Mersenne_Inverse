@@ -18,12 +18,14 @@ SLOTS = [
     # 輸入 / 輸出 scalar
     *[Slot(f"X{i}",   1) for i in range(4)],
     *[Slot(f"INV{i}", 1) for i in range(4)],
+    *[Slot(f"P{i}",   1) for i in range(4)],
 
     # 向量資料 128-bit (2 words, 16-byte align)
     *[Slot(f"VEC_F{i}", 1) for i in range(9)],
     *[Slot(f"VEC_G{i}", 1) for i in range(9)],
     *[Slot(f"VEC_V{i}", 1) for i in range(9)],
     *[Slot(f"VEC_S{i}", 1) for i in range(9)],
+    *[Slot(f"VEC_P{i}", 1) for i in range(9)],
 
     Slot("VEC_F0_F1_G0_G1", 2),  
     Slot("VEC_F2_F3_G2_G3", 2),
